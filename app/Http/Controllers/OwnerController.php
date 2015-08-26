@@ -8,7 +8,6 @@ use Illuminate\Http\HttpResponse;
 use Illuminate\Support\Facades\Input;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;

@@ -2,13 +2,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\HttpResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Input;
+//use Illuminate\Support\Facades\DB;
 
 use JWTAuth;
 use Validator;
 use Mail;
-use Illuminate\Support\Facades\DB;
+
 
 class ProfileController extends Controller
 {
@@ -36,11 +39,14 @@ class ProfileController extends Controller
             'mobile' => $user->mobile,
             'address' => $user->address,
             'zipcode' => $user->zipcode,
-            'store_id' => null
+            'stores' => [],
+            'store_id' => ''
         ];
-        //print_r($user->stores);
-        if($user->stores && !$user->stores->isEmpty()){
-            $data['store_id'] = $user->stores->first()->bID;
+        $stores = $user->stores;
+        if($stores && !$stores->isEmpty()){
+            foreach ($stores as $store) {
+                $data['stores'][] = ["id" => $store->bID, "title" => $store->title, "business_hour" => $store->business_hour];
+            }
         }
         $data['registered_at'] = $user->created_at->toDateTimeString();
 
@@ -84,7 +90,8 @@ class ProfileController extends Controller
     public function place(){
         $token = JWTAuth::getToken();
         $user = JWTAuth::toUser($token);
-        $response = []; $statusCode = 404;
+        $response = [];
+        $statusCode = Response::HTTP_NOT_FOUND;
         try{
             if($user && $user->stores && !$user->stores->isEmpty()){
                 $store = $user->stores->first();
@@ -106,7 +113,7 @@ class ProfileController extends Controller
             $response = [
                 "error" => "File doesn`t exists"
             ];
-            $statusCode = 404;
+            $statusCode = Response::HTTP_NOT_FOUND;
         }finally{
             return \Response::json($response, $statusCode);
         }
@@ -120,7 +127,7 @@ class ProfileController extends Controller
         $token = JWTAuth::getToken();
         $user = JWTAuth::toUser($token);
         $response = ["status" => "success"];
-        $statusCode = 404;
+        $statusCode = Response::HTTP_NOT_FOUND;
         try {
             $storeId = Input::only("store_id");
             if($user && $storeId) {
@@ -129,7 +136,7 @@ class ProfileController extends Controller
                     $user->stores()->detach($firstStore->bID);
                 }
                 $user->stores()->attach($storeId);
-                $statusCode = 200;
+                $statusCode = Response::HTTP_OK;
                 $response = ["status" => "success"];
             }
         } catch (Exception $e) {
@@ -137,7 +144,7 @@ class ProfileController extends Controller
                 "status" => "fail",
                 "error" => "500 error"
             ];
-            $statusCode = 500;
+            $statusCode = Response::HTTP_;
         } finally {
             return \Response::json($response, $statusCode);
         }

@@ -27,8 +27,12 @@ class ProfileFeedbackController extends Controller
         $user = JWTAuth::toUser($token);
         if($user){
             //$notes = UserFeedback::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
-            $feedbacks = $user->feedbacks()->orderBy('created_at', 'desc')->get();
-            return \Response::json(['data' => $feedbacks]);
+            $feedbacks = $user->feedbacks()->orderBy('created_at', 'desc');
+            if($storeId = Input::get("storeId")){
+                $feedbacks->where("store_id", $storeId);
+            }
+            $data = $feedbacks->get();
+            return \Response::json(['data' => $data]);
         }
 
         return \Response::json(['data' => []]);
