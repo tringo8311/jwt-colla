@@ -45,7 +45,7 @@ class ProfileController extends Controller
         $stores = $user->stores;
         if($stores && !$stores->isEmpty()){
             foreach ($stores as $store) {
-                $data['stores'][] = ["id" => $store->bID, "title" => $store->title, "business_hour" => $store->business_hour];
+                $data['stores'][] = ["id" => $store->bID, "title" => $store->title, "business_hour" => $store->business_hour, "address" => $store->address];
             }
         }
         $data['registered_at'] = $user->created_at->toDateTimeString();

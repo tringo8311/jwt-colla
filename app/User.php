@@ -54,6 +54,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         return $this->belongsToMany('App\Model\Store', 'user_stores', 'user_id', 'store_id')->withTimestamps();
     }
+
+    /**
+     *
+     *
+     */
+    public function reservations(){
+        return $this->hasMany('App\Model\UserReservationStore', 'user_id', 'id');
+    }
 }
 
 class UserObserver {

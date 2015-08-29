@@ -37,7 +37,9 @@ Route::group(['prefix' => 'v1/api'], function()
 
     Route::resource('profile.feedbacks', 'ProfileFeedbackController');
     Route::resource('profile.notes', 'ProfileNoteController');
+    Route::resource('profile.reservations', 'ProfileReservationController');
 
-    Route::resource('owner', 'OwnerController');
     Route::resource('store_offer', 'OfferController');
+    Route::resource('owner', 'OwnerController');
+    Route::resource('owner.reservations', 'OwnerReservationController');
 });
