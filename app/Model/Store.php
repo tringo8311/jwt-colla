@@ -46,6 +46,13 @@ class Store extends Model
     }
 
     /**
+     *
+     *
+     */
+    public function reservations(){
+        return $this->hasMany('App\Model\UserReservationStore', 'store_id', 'bID');
+    }
+    /**
      * @param $center_lat
      * @param $center_lng
      * @param $radius

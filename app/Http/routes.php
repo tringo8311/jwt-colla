@@ -18,6 +18,7 @@ Route::group(['prefix' => 'v1/api'], function()
 {
     Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
     Route::post('authenticate', 'AuthenticateController@authenticate');
+    Route::post('refresh', 'AuthenticateController@refresh');
 
     //Route::resource('users/signup', 'UserController', ['only' => ['index']]);
     Route::post('user/signup', 'UserController@signup');
@@ -33,7 +34,7 @@ Route::group(['prefix' => 'v1/api'], function()
     Route::post('profile/{id}', 'ProfileController@update');
     Route::get('profile/{id}/place', 'ProfileController@place');
     Route::post('profile/{id}/favourite', 'ProfileController@favourite');
-    Route::post('profile.contact', 'ProfileController@contact');
+    Route::post('profile/{id}/contact', 'ProfileController@contact');
 
     Route::resource('profile.feedbacks', 'ProfileFeedbackController');
     Route::resource('profile.notes', 'ProfileNoteController');
@@ -42,4 +43,5 @@ Route::group(['prefix' => 'v1/api'], function()
     Route::resource('store_offer', 'OfferController');
     Route::resource('owner', 'OwnerController');
     Route::resource('owner.reservations', 'OwnerReservationController');
+    Route::put('owner/{user_id}/reservations/{id}/answer', 'OwnerReservationController@answer');
 });

@@ -41,11 +41,12 @@ class OwnerController extends Controller
             $followerSize = Store::find($store_id)->users()->where("user_id", "!=", $user->id)->count();
             $rateAverage = Store::find($store_id)->feedbacks()->avg('rate');
             $offerSize = Store::find($store_id)->offers()->where("activated", 1)->count();
+            $reservationSize = Store::find($store_id)->reservations()->count();
             $response['data'] = [
                 'followerSize' => $followerSize,
                 'rateAverage' => $rateAverage,
                 'offerSize' => $offerSize,
-                'report' => ''
+                'reservationSize' => $reservationSize
             ];
         }catch (Exception $e){
             $statusCode = 400;

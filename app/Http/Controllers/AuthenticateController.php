@@ -17,7 +17,8 @@ class AuthenticateController extends Controller
         // Apply the jwt.auth middleware to all methods in this controller
         // except for the authenticate method. We don't want to prevent
         // the user from retrieving their token if they don't already have it
-        $this->middleware('jwt.auth', ['except' => ['authenticate']]);
+        $this->middleware('jwt.auth', ['except' => ['authenticate', 'refresh']]);
+        $this->middleware('jwt.refresh', ['except' => ['authenticate']]);
     }
 
     public function index()
@@ -27,6 +28,10 @@ class AuthenticateController extends Controller
         return $users;
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function authenticate(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -44,5 +49,17 @@ class AuthenticateController extends Controller
 
         // if no errors are encountered we can return a JWT
         return response()->json(compact('token'));
+    }
+    /**
+     * Refresh an expired token.
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
+    public function refresh(Request $request)
+    {
+        // if no errors are encountered we can return a JWT
+        return response()->json('{status:"refresh"}');
     }
 }

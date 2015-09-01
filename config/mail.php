@@ -15,7 +15,8 @@ return [
     |
     */
 
-    'driver' => env('MAIL_DRIVER', 'mailgun'),
+    //'driver' => env('MAIL_DRIVER', 'mailgun'),
+    'driver' => env('MAIL_DRIVER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +29,8 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    //'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +82,8 @@ return [
     |
     */
 
-    'username' => env('postmaster'),
+    //'username' => env('postmaster'),
+    'username' => env('tringo8311@gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -93,7 +96,8 @@ return [
     |
     */
 
-    'password' => env('00ce471b12941d5faf90487c7cf85658'),
+    //'password' => env('00ce471b12941d5faf90487c7cf85658'),
+    'password' => env('calendar2711'),
 
     /*
     |--------------------------------------------------------------------------

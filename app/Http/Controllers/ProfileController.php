@@ -155,11 +155,11 @@ class ProfileController extends Controller
      */
     public function contact(Request $request){
         //Get all the data and store it inside Store Variable
-        $data = Input::only('full_name', 'email', 'subject', 'message');
+        $data = Input::only('fullname', 'email', 'subject', 'message');
 
         //Validation rules
         $rules = array (
-            'full_name' => 'required',
+            'fullname' => 'required',
             'email' => 'required|email',
             'subject' => 'required|min:2',
             'message' => 'required|min:5'

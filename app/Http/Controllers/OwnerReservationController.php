@@ -44,11 +44,17 @@ class OwnerReservationController extends Controller
         $user = JWTAuth::toUser($token);
         $keyword = Input::get('keyword');
         $storeId = Input::get('store_id');
+        $statusArr = Input::get('status') ? Input::get('status') : null;
+        // TODO: validation Request params
         try{
             if($user && $storeId){
                 $reservation = UserReservationStore::where('store_id', $storeId)->orderBy('created_at', 'desc');
+                if(!empty($statusArr)){
+                    $reservation->whereIn('status', $statusArr);
+                }
                 if($keyword && $keyword != ""){
-                    $reservation->where('content', 'like' ,"%$keyword%")->orWhere('prefer', 'like' ,"%$keyword%");
+                    $reservation->where('content', 'like' ,"%$keyword%");
+                    //->orWhere('prefer', 'like' ,"%$keyword%");
                 }
                 $reservations = $reservation->get();
                 $data = array();
@@ -182,6 +188,41 @@ class OwnerReservationController extends Controller
         }finally{
             return \Response::json($response, $statusCode);
         }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  Request  $request
+     * @param  int  $userId
+     * @param  int  $id
+     * @return Response
+     */
+    public function answer(Request $request, $userId, $id){
+        $token = JWTAuth::getToken();
+        $user = JWTAuth::toUser($token);
+        if ($user && $userId) {
+            $v = Validator::make($request->all(), $this->rules);
+            $reservation = UserReservationStore::find($id);
+            if ($reservation && $v->passes()) {
+                $data = Input::only('status', 'answer');
+                foreach ($data as $key => $value) {
+                    if (null != $value) {
+                        $reservation->$key = $value;
+                    }
+                }
+                $reservation->save();
+                return \Response::json([
+                    'status' => "success",
+                    'message' => "Your reservation has been updated. Thank You!",
+                    'data' => $reservation
+                ], Response::HTTP_OK);
+            }
+        }
+        return \Response::json([
+            'status' => "fail",
+            'message' => "Your session was expired"
+        ], Response::HTTP_CONFLICT);
     }
 
     /**

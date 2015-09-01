@@ -155,7 +155,6 @@ class ProfileNoteController extends Controller
             'message' => "Your session was expired"
         ], Response::HTTP_CONFLICT);
     }
-
     /**
      * Remove the specified resource from storage.
      *
