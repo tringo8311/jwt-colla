@@ -31,13 +31,20 @@ class StoreController extends Controller
     {
         $statusCode = 200;
         $response = [
-            'stores'  => []
+            'data'  => [],
+            'length' => 0
         ];
+        $keyword = Input::get('keyword');
         try{
-            $stores = Store::all()->take(9);
-            //$response['photos'] = $stores;
+            $stores = Store::where('active', '1')->orderBy('created_at', 'desc');
+            if($keyword){
+                $stores->where('content', 'like' ,"%$keyword%")->orWhere('title', 'like' ,"%$keyword%")
+                    ->orWhere('service', 'like' ,"%$keyword%")
+                    ->orWhere('zipcode', 'like' ,"%$keyword%");
+            }
+            $stores = $stores->limit(self::$limit)->offset(0)->get();
             foreach($stores as $store){
-                $response['stores'][] = [
+                $response['data'][] = [
                     'id' => $store->bID,
                     'title' => $store->title,
                     'address' => $store->address,
@@ -144,7 +151,7 @@ class StoreController extends Controller
         $token = JWTAuth::getToken();
         $user = JWTAuth::toUser($token);
         if ($user) {
-            $data = Input::only('title', 'company_name', 'address', 'city', 'state', 'zipcode', 'phone', 'fax');
+            $data = Input::only('title', 'company_name', 'address', 'city', 'state', 'zipcode', 'phone', 'fax', 'website', 'email', 'latitude', 'longtitude', 'business_hour', 'overview', 'content');
             $store = Store::find($id);
             if($store){
                 foreach($data as $key => $value){

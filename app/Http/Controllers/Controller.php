@@ -11,6 +11,8 @@ abstract class Controller extends BaseController
 {
     use DispatchesJobs, ValidatesRequests;
 
+    static $limit = 10;
+
     public static function get_last_query() {
         $queries = DB::getQueryLog();
         $sql = end($queries);

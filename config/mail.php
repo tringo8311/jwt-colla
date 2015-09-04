@@ -83,7 +83,7 @@ return [
     */
 
     //'username' => env('postmaster'),
-    'username' => env('tringo8311@gmail.com'),
+    'username' => env('MAIL_USERNAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -97,7 +97,7 @@ return [
     */
 
     //'password' => env('00ce471b12941d5faf90487c7cf85658'),
-    'password' => env('calendar2711'),
+    'password' => env('MAIL_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------

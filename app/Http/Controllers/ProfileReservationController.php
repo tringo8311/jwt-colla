@@ -86,11 +86,10 @@ class ProfileReservationController extends Controller
         if($user) {
             $v = Validator::make($request->all(), $this->rules);
             if ($v->passes()) {
-                $input = Input::only('store_id', 'prefer', 'content');
-                $input['datetime'] = Input::get('date');
-                    //. " " . Input::only('time');
-                $input['user_id'] = $user->id;
-                $newReservation = UserReservationStore::create($input);
+                $data = Input::only('store_id', 'prefer', 'content');
+                $data['datetime'] = Input::get('datetime');
+                $data['user_id'] = $user->id;
+                $newReservation = UserReservationStore::create($data);
                 return \Response::json(['status' => 'success', 'data' => $newReservation], $statusCode);
             }else{
                 $ms = $v->messages();
@@ -156,8 +155,9 @@ class ProfileReservationController extends Controller
                 $reservation = UserReservationStore::find($id);
                 if ($reservation && $v->passes()) {
                     $data = Input::only('store_id', 'prefer', 'content');
-                    $input['datetime'] = Input:: nbget('date');
-                    $input['user_id'] = $user->id;
+                    $data['datetime'] = Input::get('datetime');
+                    $data['user_id'] = $user->id;
+
                     foreach ($data as $key => $value) {
                         if (null != $value) {
                             $reservation->$key = $value;

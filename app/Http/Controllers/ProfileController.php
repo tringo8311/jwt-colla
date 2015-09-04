@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Input;
 use JWTAuth;
 use Validator;
 use Mail;
+use App\Model\Store;
 
 
 class ProfileController extends Controller
@@ -126,29 +127,64 @@ class ProfileController extends Controller
     {
         $token = JWTAuth::getToken();
         $user = JWTAuth::toUser($token);
-        $response = ["status" => "success"];
+        $response = [
+            "status" => "fail",
+            "data" => []
+        ];
         $statusCode = Response::HTTP_NOT_FOUND;
         try {
-            $storeId = Input::only("store_id");
-            if($user && $storeId) {
+            $storeId = Input::get("store_id");
+            $store = Store::find($storeId)->get();
+            if($user && $storeId && $store) {
                 if($user->stores && !$user->stores->isEmpty() && ($user->stores->count() > 5)){
                     $firstStore = $user->stores->first();
                     $user->stores()->detach($firstStore->bID);
                 }
                 $user->stores()->attach($storeId);
+
                 $statusCode = Response::HTTP_OK;
-                $response = ["status" => "success"];
+                $response["status"] = "success";
+                $response["data"] = $store;
             }
         } catch (Exception $e) {
-            $response = [
-                "status" => "fail",
-                "error" => "500 error"
-            ];
-            $statusCode = Response::HTTP_;
+            $response["status"] = "fail";
+            $response["error"] = "500 error";
+            $statusCode = Response::HTTP_CONFLICT;
         } finally {
             return \Response::json($response, $statusCode);
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function unfavourite()
+    {
+        $token = JWTAuth::getToken();
+        $user = JWTAuth::toUser($token);
+        $response = [
+            "status" => "fail",
+            "data" => []
+        ];
+        $statusCode = Response::HTTP_NOT_FOUND;
+        try {
+            $storeId = Input::get("store_id");
+            $store = Store::find($storeId)->get();
+            if($user && $storeId && $store) {
+                $user->stores()->detach($storeId);
+                $statusCode = Response::HTTP_OK;
+                $response["status"] = "success";
+                $response["data"] = $store;
+            }
+        } catch (Exception $e) {
+            $response["status"] = "fail";
+            $response["error"] = "500 error";
+            $statusCode = Response::HTTP_CONFLICT;
+        } finally {
+            return \Response::json($response, $statusCode);
+        }
+    }
+
     /**
      * @param Request $request
      * @return mixed

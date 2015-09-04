@@ -23,6 +23,7 @@ Route::group(['prefix' => 'v1/api'], function()
     //Route::resource('users/signup', 'UserController', ['only' => ['index']]);
     Route::post('user/signup', 'UserController@signup');
 
+    Route::get('store', 'StoreController@index');
     Route::get('store/near', 'StoreController@near');
     Route::get('store/{id}', 'StoreController@show');
     Route::post('store/{id}', 'StoreController@update');
@@ -34,6 +35,7 @@ Route::group(['prefix' => 'v1/api'], function()
     Route::post('profile/{id}', 'ProfileController@update');
     Route::get('profile/{id}/place', 'ProfileController@place');
     Route::post('profile/{id}/favourite', 'ProfileController@favourite');
+    Route::post('profile/{id}/unfavourite', 'ProfileController@unfavourite');
     Route::post('profile/{id}/contact', 'ProfileController@contact');
 
     Route::resource('profile.feedbacks', 'ProfileFeedbackController');
