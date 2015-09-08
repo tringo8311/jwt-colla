@@ -1,0 +1,28 @@
+{
+  "name": "jwt-colla",
+  "version": "beta",
+  "homepage": "https://github.com/tringo8311/jwt-colla",
+  "authors": [
+    "tri.ngo <tri.ngo@hrboss.com>"
+  ],
+  "description": "Manage store",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "vendor/bower_dl",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "font-awesome": "fontawesome#~4.4.0",
+    "jquery": "~2.1.4"
+  },
+  "keywords": [
+    "manage",
+    "store",
+    "salon",
+    "nail"
+  ],
+  "license": "MIT"
+}

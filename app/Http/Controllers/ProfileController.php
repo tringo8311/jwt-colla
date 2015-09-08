@@ -6,13 +6,12 @@ use Illuminate\Http\Response;
 use Illuminate\Http\HttpResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Input;
-//use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 
 use JWTAuth;
 use Validator;
 use Mail;
 use App\Model\Store;
-
 
 class ProfileController extends Controller
 {
@@ -204,12 +203,15 @@ class ProfileController extends Controller
         $validator = Validator::make ($data, $rules);
         //If everything is correct than run passes.
         if ($validator -> passes()){
+            $data['content'] = Input::get("message");
             Mail::send('emails.contact', $data, function($message) use ($data){
                 $message->from(env('CUSTOMER_CONTACT_EMAIL_FROM'), env('CUSTOMER_CONTACT_NAME'));
-                $message->to(env('CUSTOMER_CONTACT_EMAIL_TO'), env('CUSTOMER_CONTACT_NAME'))->cc(env('CUSTOMER_CONTACT_EMAIL_CC'))->subject(env('CUSTOMER_CONTACT_SUBJECT'));
+                $message->to(env('CUSTOMER_CONTACT_EMAIL_TO'), env('CUSTOMER_CONTACT_NAME'))
+                    ->cc(env('CUSTOMER_CONTACT_EMAIL_CC'))
+                    ->subject(env('CUSTOMER_CONTACT_SUBJECT'));
             });
             return \Response::json([
-                'status' => "success",
+                'status'   => "success",
                 'message' => "Your message has been sent. Thank You!"
             ]);
         }else{

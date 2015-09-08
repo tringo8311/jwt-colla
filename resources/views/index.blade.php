@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Angular-Laravel Authentication</title>
+    <link href="//fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
     {!! Html::style('public/node_modules/bootstrap/dist/css/bootstrap.css')!!}
     <!--link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css"-->
     {!! Html::script('public/node_modules/angular/angular.js') !!}

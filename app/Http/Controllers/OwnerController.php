@@ -12,6 +12,7 @@ use Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Model\Store;
+use App\Model\UserFeedback;
 
 class OwnerController extends Controller
 {
@@ -22,6 +23,7 @@ class OwnerController extends Controller
         // the user from retrieving their token if they don't already have it
         //$this->middleware('jwt.auth', ['except' => ['update']]);
         $this->middleware('jwt.auth');
+        \DB::enableQueryLog();
     }
     /**
      * Display a listing of the resource.
@@ -39,7 +41,7 @@ class OwnerController extends Controller
         $store_id = Input::get('store_id');;
         try{
             $followerSize = Store::find($store_id)->users()->where("user_id", "!=", $user->id)->count();
-            $rateAverage = Store::find($store_id)->feedbacks()->avg('rate');
+            $rateAverage = UserFeedback::where('store_id', $store_id)->avg('rate');
             $offerSize = Store::find($store_id)->offers()->where("activated", 1)->count();
             $reservationSize = Store::find($store_id)->reservations()->count();
             $response['data'] = [

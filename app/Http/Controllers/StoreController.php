@@ -21,6 +21,7 @@ class StoreController extends Controller
         // the user from retrieving their token if they don't already have it
         //$this->middleware('jwt.auth', ['except' => ['update']]);
         $this->middleware('jwt.auth', ['except' => ['near']]);
+        \DB::enableQueryLog();
     }
     /**
      * Display a listing of the resource.
@@ -29,22 +30,29 @@ class StoreController extends Controller
      */
     public function index()
     {
-        $statusCode = 200;
+        $statusCode = \Response::HTTP_OK;
         $response = [
-            'data'  => [],
-            'length' => 0
+            'pageItems'  => [],
+            'totalItems' => 0,
+            'pageNumber' => 1,
+            'pageSize' => 10
         ];
         $keyword = Input::get('keyword');
+        $page = Input::get('page') ? Input::get('page') : 1;
+        $pageSize = Input::get('pageSize') ? Input::get('pageSize') : self::$limit;
+        $offset = ($page - 1) * $pageSize;
         try{
             $stores = Store::where('active', '1')->orderBy('created_at', 'desc');
             if($keyword){
-                $stores->where('content', 'like' ,"%$keyword%")->orWhere('title', 'like' ,"%$keyword%")
-                    ->orWhere('service', 'like' ,"%$keyword%")
-                    ->orWhere('zipcode', 'like' ,"%$keyword%");
+                $stores->where('title', 'like' ,"%$keyword%")->orWhere('address', 'like' ,"%$keyword%")
+                    ->orWhere('service', 'like' ,"%$keyword%")->orWhere('zipcode', 'like' ,"%$keyword%");
             }
-            $stores = $stores->limit(self::$limit)->offset(0)->get();
+            $response['totalItems'] = $stores->count();
+            $response['pageNumber'] = $page;
+            $response['pageSize'] = $pageSize;
+            $stores = $stores->limit($pageSize)->offset($offset)->get();
             foreach($stores as $store){
-                $response['data'][] = [
+                $response['pageItems'][] = [
                     'id' => $store->bID,
                     'title' => $store->title,
                     'address' => $store->address,
@@ -58,7 +66,7 @@ class StoreController extends Controller
                 ];
             }
         }catch (Exception $e){
-            $statusCode = 400;
+            $statusCode = \Response::HTTP_NOT_FOUND;
         }finally{
             return \Response::json($response, $statusCode);
         }
