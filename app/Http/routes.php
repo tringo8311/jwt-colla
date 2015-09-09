@@ -4,14 +4,17 @@
 Route::get('/', function () {
     return view('index');
 });
+Route::get('/home', function () {
+    return view('home');
+});
 
 Route::group(['prefix' => 'password'], function() {
     Route::get('email', 'Auth\PasswordController@getEmail');
     Route::post('email', 'Auth\PasswordController@postEmail');
 
     // Password reset routes...
+    Route::post('reset', 'Auth\PasswordController@postReset');
     Route::get('reset/{token}', 'Auth\PasswordController@getReset');
-    Route::put('reset', 'Auth\PasswordController@postEmail');
 });
 
 Route::group(['prefix' => 'v1/api'], function()

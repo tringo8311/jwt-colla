@@ -8,16 +8,16 @@ var elixir = require('laravel-elixir');
  */
 gulp.task("copyfiles", function() {
 
-    gulp.src("vendor/bower_dl/jquery/dist/jquery.js")
+    gulp.src("vendor/bower_components/jquery/dist/jquery.js")
         .pipe(gulp.dest("resources/assets/js/"));
 
-    gulp.src("vendor/bower_dl/bootstrap/less/**")
+    gulp.src("vendor/bower_components/bootstrap/less/**")
         .pipe(gulp.dest("resources/assets/less/bootstrap"));
 
-    gulp.src("vendor/bower_dl/bootstrap/dist/js/bootstrap.js")
+    gulp.src("vendor/bower_components/bootstrap/dist/js/bootstrap.js")
         .pipe(gulp.dest("resources/assets/js/"));
 
-    gulp.src("vendor/bower_dl/bootstrap/dist/fonts/**")
+    gulp.src("vendor/bower_components/bootstrap/dist/fonts/**")
         .pipe(gulp.dest("public/assets/fonts"));
 
 });

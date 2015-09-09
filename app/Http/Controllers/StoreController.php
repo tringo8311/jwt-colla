@@ -30,7 +30,7 @@ class StoreController extends Controller
      */
     public function index()
     {
-        $statusCode = \Response::HTTP_OK;
+        $statusCode = Response::HTTP_OK;
         $response = [
             'pageItems'  => [],
             'totalItems' => 0,
@@ -66,7 +66,7 @@ class StoreController extends Controller
                 ];
             }
         }catch (Exception $e){
-            $statusCode = \Response::HTTP_NOT_FOUND;
+            $statusCode = Response::HTTP_NOT_FOUND;
         }finally{
             return \Response::json($response, $statusCode);
         }
@@ -101,7 +101,7 @@ class StoreController extends Controller
      */
     public function show($id)
     {
-        $statusCode = 200;
+        $statusCode = Response::HTTP_OK;
         $response = ["data" > ""];
         try{
             $store = Store::find($id);

@@ -88,4 +88,38 @@ class PasswordController extends Controller
             return \Response::json($response, $statusCode);
         }
     }
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postReset(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $credentials = $request->only(
+            'email', 'password', 'password_confirmation', 'token'
+        );
+
+        $response = Password::reset($credentials, function ($user, $password) {
+            $this->resetPassword($user, $password);
+        });
+
+
+        switch ($response) {
+            case Password::PASSWORD_RESET:
+                return redirect($this->redirectPath());
+
+            default:
+                return redirect()->back()
+                    ->withInput($request->only('email'))
+                    ->withErrors(['email' => trans($response)]);
+        }
+    }
 }
