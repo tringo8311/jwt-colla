@@ -23,7 +23,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @var array
      */
-    protected $fillable = ['username', 'email', 'password', 'role',  'code', 'first_name', 'last_name', 'mobile', 'address', 'zipcode'];
+    protected $fillable = ['username', 'email', 'password', 'role',  'code', 'first_name', 'last_name', 'mobile', 'address', 'zipcode', 'activated'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -66,8 +66,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 class UserObserver {
 
-    public function saving($activity)
-    {
+    /**
+     * Use for case create user
+     * @param $activity
+     *
+     */
+    public function saving($activity){
         $activity->code = hexdec(uniqid());
     }
 }

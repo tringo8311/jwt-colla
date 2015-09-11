@@ -16,13 +16,14 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('username');
             $table->bigInteger('code')->unique();
-            $table->string('role');
+            $table->enum('role', ['admin', 'customer', 'owner'])->default('customer');;
             $table->string('first_name');
             $table->string('last_name');
             $table->string('address');
             $table->string('zipcode');
             $table->string('mobile');
             $table->string('email')->unique();
+            $table->boolean("activated")->default(0);
             $table->string('password', 60);
             $table->boolean("confirmed")->default(0);
             $table->rememberToken();

@@ -49,10 +49,16 @@ class UserController extends Controller
                 'password' => 'required|min:6|confirmed',
                 'password_confirmation'=> 'required|min:6'
             ]);
+        $preferType = Input::get('prefer_type');
         if(!$validator->fails()){
             try {
                 $credentials['password'] = Hash::make($credentials['password']);
-                $credentials['role'] = "customer";
+                if($preferType && $preferType == "owner"){
+                    $credentials['role'] = "owner";
+                    $credentials['activated'] = 0;
+                }else{
+                    $credentials['role'] = "customer";
+                }
                 User::observe(new UserObserver());
                 $user = User::create($credentials);
                 $response['data'] = $user;

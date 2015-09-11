@@ -3,11 +3,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use App\User;
+use App\Http\Requests;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 
 class AuthenticateController extends Controller
@@ -41,6 +40,12 @@ class AuthenticateController extends Controller
             // verify the credentials and create a token for the user
             if (! $token = JWTAuth::attempt($credentials)) {
                 return response()->json(['error' => 'invalid_credentials'], 401);
+            }else{
+                // Check account is activated or not
+                $user = JWTAuth::toUser($token);
+                if($user->activated != "1"){
+                    return response()->json(['error' => 'account_deactivated'], 403);
+                }
             }
         } catch (JWTException $e) {
             // something went wrong
