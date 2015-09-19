@@ -57,10 +57,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      *
-     *
      */
     public function reservations(){
         return $this->hasMany('App\Model\UserReservationStore', 'user_id', 'id');
+    }
+
+    /**
+     *
+     */
+    public function stamps(){
+        return $this->hasMany('App\Model\UserStampStore', 'user_id', 'id');
     }
 }
 

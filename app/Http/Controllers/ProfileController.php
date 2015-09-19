@@ -6,12 +6,13 @@ use Illuminate\Http\Response;
 use Illuminate\Http\HttpResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\DB;
+//use Illuminate\Support\Facades\DB;
 
 use JWTAuth;
 use Validator;
 use Mail;
 use App\Model\Store;
+use App\Model\UserStampStore;
 
 class ProfileController extends Controller
 {
@@ -111,7 +112,36 @@ class ProfileController extends Controller
             }
         }catch(Exception $e){
             $response = [
-                "error" => "File doesn`t exists"
+                "error" => "Store doesn`t exists"
+            ];
+            $statusCode = Response::HTTP_NOT_FOUND;
+        }finally{
+            return \Response::json($response, $statusCode);
+        }
+    }
+
+    /**
+     * Get first store
+     * @return mixed
+     */
+    public function stamp(){
+        $token = JWTAuth::getToken();
+        $user = JWTAuth::toUser($token);
+        $response = [];
+        $statusCode = Response::HTTP_NOT_FOUND;
+        $storeId = Input::get("store_id");
+        try{
+            if($user && $storeId){
+                $stamps = UserStampStore::where('store_id', $storeId)
+                    ->where('user_id', $user->id)
+                    ->where('used', 0)
+                    ->orderBy('datetime', 'desc')->get();
+                $statusCode = Response::HTTP_OK;
+                $response = ["data" => $stamps];
+            }
+        }catch(Exception $e){
+            $response = [
+                "error" => "Store doesn`t exists"
             ];
             $statusCode = Response::HTTP_NOT_FOUND;
         }finally{

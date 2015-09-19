@@ -52,6 +52,14 @@ class Store extends Model
     public function reservations(){
         return $this->hasMany('App\Model\UserReservationStore', 'store_id', 'bID');
     }
+
+    /**
+     *
+     *
+     */
+    public function stamps(){
+        return $this->hasMany('App\Model\UserStampStore', 'store_id', 'bID');
+    }
     /**
      * @param $center_lat
      * @param $center_lng

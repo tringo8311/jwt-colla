@@ -40,13 +40,14 @@ class ProfileNoteController extends Controller
         $token = JWTAuth::getToken();
         $user = JWTAuth::toUser($token);
         $keyword = Input::get('keyword');
+        $pageSize = 100;
         try{
             if($user){
                 $note = UserNote::where('user_id', $user->id)->orderBy('created_at', 'desc');
                 if($keyword){
                     $note->where('content', 'like' ,"%$keyword%")->orWhere('barcode', 'like' ,"%$keyword%")->orWhere('product_code', 'like' ,"%$keyword%");
                 }
-                $notes = $note->get();
+                $notes = $note->limit($pageSize)->get();
                 $data = array();
                 foreach ($notes as $note) {
                     $data[] = $note->toArray();

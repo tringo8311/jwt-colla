@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 
 use App\Http\Requests;
 use App\Model\Store;
+use App\User;
 use JWTAuth;
 use Validator;
 
@@ -21,7 +22,7 @@ class StoreController extends Controller
         // the user from retrieving their token if they don't already have it
         //$this->middleware('jwt.auth', ['except' => ['update']]);
         $this->middleware('jwt.auth', ['except' => ['near']]);
-        \DB::enableQueryLog();
+        //\DB::enableQueryLog();
     }
     /**
      * Display a listing of the resource.
@@ -256,7 +257,7 @@ class StoreController extends Controller
      *
      */
     public function fetch_customers($store_id){
-        $statusCode = 200;
+        $statusCode = Response::HTTP_OK;
         $response = [
             'data'  => [],
             'length' => 0
@@ -266,18 +267,22 @@ class StoreController extends Controller
         $keyword = Input::get('keyword');
         try{
             $store = Store::find($store_id)->users()->where("user_id", "!=", $user->id)->orderBy('created_at', 'desc');
+            //$store = User::where("store_id", "=", $store_id)->users()->where("user_id", "!=", $user->id)->orderBy('created_at', 'desc');
             if($keyword){
-                $store = $store->where('first_name', 'like' ,"%$keyword%")->orWhere('code', 'like' ,"%$keyword%");
+                $store = $store->where('first_name', 'like' ,"%$keyword%");
+                //->orWhere('code', 'like' ,"%$keyword%");
+                //$store = $store->where('code', 'like' ,"%$keyword%");
             }
             $users = $store->get();
             $customers = array();
             foreach ($users as $user) {
+                $user->stamp_count = $user->stamps()->count();
                 $customers[] = $user->toArray();
             }
             $response["length"] = sizeof($customers);
             $response["data"] = $customers;
         }catch (Exception $e){
-            $statusCode = 400;
+            $statusCode = Response::HTTP_CONFLICT;
         }finally{
             return \Response::json($response, $statusCode);
         }

@@ -37,6 +37,7 @@ Route::group(['prefix' => 'v1/api'], function()
     Route::get('profile', 'ProfileController@index');
     Route::post('profile/{id}', 'ProfileController@update');
     Route::get('profile/{id}/place', 'ProfileController@place');
+    Route::get('profile/{id}/stamp', 'ProfileController@stamp');
     Route::post('profile/{id}/favourite', 'ProfileController@favourite');
     Route::post('profile/{id}/unfavourite', 'ProfileController@unfavourite');
     Route::post('profile/{id}/contact', 'ProfileController@contact');
@@ -49,4 +50,5 @@ Route::group(['prefix' => 'v1/api'], function()
     Route::resource('owner', 'OwnerController');
     Route::resource('owner.reservations', 'OwnerReservationController');
     Route::put('owner/{user_id}/reservations/{id}/answer', 'OwnerReservationController@answer');
+    Route::resource('owner.stamps', 'OwnerStampController');
 });
