@@ -244,7 +244,6 @@ class StoreController extends Controller
         ];
         try{
             $offers = Store::find($store_id)->offers()->where("activated", 1)->orderBy('start_time', 'desc')->get();
-            //self::get_last_query();
             $response["length"] = sizeof($offers);
             $response["data"] = $offers;
         }catch (Exception $e){

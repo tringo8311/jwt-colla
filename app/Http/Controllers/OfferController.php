@@ -49,7 +49,6 @@ class OfferController extends Controller
         $store_id = Input::get("store_id");
         try{
             $offers = Store::find($store_id)->offers()->where("activated", 1)->get();
-            //self::get_last_query();
             $response["length"] = sizeof($offers);
             $response["data"] = $offers;
         }catch (Exception $e){

@@ -51,4 +51,6 @@ Route::group(['prefix' => 'v1/api'], function()
     Route::resource('owner.reservations', 'OwnerReservationController');
     Route::put('owner/{user_id}/reservations/{id}/answer', 'OwnerReservationController@answer');
     Route::resource('owner.stamps', 'OwnerStampController');
+    Route::post('owner/{user_id}/stamps/discount', 'OwnerStampController@discount');
+
 });

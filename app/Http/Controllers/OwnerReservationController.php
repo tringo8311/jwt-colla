@@ -238,11 +238,11 @@ class OwnerReservationController extends Controller
         $user = JWTAuth::toUser($token);
         $reservation = UserReservationStore::find($id);
         $ms = "Item not found";
-        $statusCode = 404;
+        $statusCode = Response::HTTP_NOT_FOUND;
         $status = "fail";
         if($user && $reservation && ($user->id == $reservation->user_id)) {
             try{
-                $statusCode = 200;
+                $statusCode = Response::HTTP_OK;
                 $status = "success";
                 $ms = "Your note has just deleted";
                 $reservation->delete();
