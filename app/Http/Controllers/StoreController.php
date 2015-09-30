@@ -268,14 +268,16 @@ class StoreController extends Controller
             $store = Store::find($store_id)->users()->where("user_id", "!=", $user->id)->orderBy('created_at', 'desc');
             //$store = User::where("store_id", "=", $store_id)->users()->where("user_id", "!=", $user->id)->orderBy('created_at', 'desc');
             if($keyword){
-                $store = $store->where('first_name', 'like' ,"%$keyword%");
-                //->orWhere('code', 'like' ,"%$keyword%");
-                //$store = $store->where('code', 'like' ,"%$keyword%");
+                if(is_int($keyword)){
+                    $store->where('code', 'like' ,"%$keyword%");
+                }else{
+                    $store->where('first_name', 'like' ,"%$keyword%");
+                }
             }
             $users = $store->get();
             $customers = array();
             foreach ($users as $user) {
-                $user->stamp_count = $user->stamps()->count();
+                $user->stamp_count = $user->stamps()->where('used', '=', 0)->count();
                 $customers[] = $user->toArray();
             }
             $response["length"] = sizeof($customers);

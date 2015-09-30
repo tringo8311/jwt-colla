@@ -17,4 +17,19 @@ class UserReservationStore extends Model
     protected $fillable = array('user_id','store_id','prefer','datetime','content','approved', 'answer', 'reminder');
 
     protected $guarded = array('id');
+
+    /**
+     * Return user information
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(){
+        return $this->belongsTo('App\User', 'user_id');
+    }
+    /**
+     * Return user information
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function store(){
+        return $this->belongsTo('App\Model\Store', 'store_id');
+    }
 }

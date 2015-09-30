@@ -234,7 +234,7 @@ class ProfileController extends Controller
         //If everything is correct than run passes.
         if ($validator -> passes()){
             $data['content'] = Input::get("message");
-            Mail::send('emails.contact', $data, function($message) use ($data){
+            $sent = Mail::send('emails.contact', $data, function($message) use ($data){
                 $message->from(env('CUSTOMER_CONTACT_EMAIL_FROM'), env('CUSTOMER_CONTACT_NAME'));
                 $message->to(env('CUSTOMER_CONTACT_EMAIL_TO'), env('CUSTOMER_CONTACT_NAME'))
                     ->cc(env('CUSTOMER_CONTACT_EMAIL_CC'))
@@ -242,7 +242,8 @@ class ProfileController extends Controller
             });
             return \Response::json([
                 'status'   => "success",
-                'message' => "Your message has been sent. Thank You!"
+                'message' => "Your message has been sent. Thank You!",
+                'sent' => $sent
             ]);
         }else{
             $messages = $validator->messages();

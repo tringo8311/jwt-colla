@@ -32,8 +32,7 @@ class ProfileReservationController extends Controller
      *
      * @return Response
      */
-    public function index()
-    {
+    public function index(){
         $statusCode = Response::HTTP_OK;
         $response = [
             'data'  => [],
@@ -42,13 +41,60 @@ class ProfileReservationController extends Controller
         // Retrieve all the users in the database and return them
         $token = JWTAuth::getToken();
         $user = JWTAuth::toUser($token);
-        //$keyword = Input::get('keyword');
+        $statusArr = Input::get('status') ? Input::get('status') : null;
+        $period = Input::get('period') ? Input::get('period') : "all";
+        //$keyword = Input::get('keyword') ? Input::get('keyword') : "";
         try{
             if($user){
                 $reservation = UserReservationStore::where('user_id', $user->id)->orderBy('created_at', 'desc');
+                if($period && $period != "all"){
+                    switch ($period) {
+                        case 'available':
+                            $reservation->where('datetime', '>', \DB::raw('NOW()'));
+                            break;
+                        case 'tomorrow':
+                            $tomorrow = date('Y-m-d',strtotime("+1 days"));
+                            $reservation->whereBetween('datetime', [$tomorrow . ' 00:00:00', $tomorrow . ' 23:59:59']);
+                            break;
+                        case 'today':
+                            $reservation->whereBetween('datetime', [date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')]);
+                            break;
+                        case 'yesterday':
+                            $yesterday = date('Y-m-d',strtotime("-1 days"));
+                            $reservation->whereBetween('datetime', [$yesterday . ' 00:00:00', $yesterday . ' 23:59:59']);
+                            break;
+                        case 'this_week':
+                            $reservation->where('datetime', '>', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 WEEK)'));
+                            break;
+                        case 'this_month':
+                            $reservation->where(\DB::raw('YEAR(datetime)'), '=', date('Y'));
+                            $reservation->where(\DB::raw('MONTH(datetime)'), '=', date('n'));
+                            break;
+                        case 'last_month':
+                            //$reservation->whereBetween('datetime', [\DB::raw('DATE_FORMAT(NOW() - INTERVAL 1 MONTH, \'%Y-%m-01 00:00:00\')'), \DB::raw('DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), \'%Y-%m-%d 23:59:59\')')]);
+                            $reservation->whereRaw('`datetime` BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 MONTH, \'%Y-%m-01 00:00:00\') AND DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), \'%Y-%m-%d 23:59:59\')');
+                            break;
+                        case 'current_year':
+                            //$reservation->whereBetween('datetime', [\DB::raw('YEAR(datetime)'), \DB::raw('DATE_FORMAT(NOW()')]);
+                            $reservation->where(\DB::raw('YEAR(datetime)'), '=', \DB::raw('YEAR(CURDATE())'));
+                            break;
+                        case 'last_year':
+                            $reservation->where(\DB::raw('YEAR(datetime)'), '=', date('Y') - 1);
+                            break;
+                        default:
+                    }
+
+                }
+                if(!empty($statusArr)){
+                    $reservation->whereIn('status', $statusArr);
+                }
                 $reservations = $reservation->get();
                 $data = array();
                 foreach ($reservations as $reservation) {
+                    $belongTo = $reservation->store;
+                    $reservation->store = array(
+                        'title' => $belongTo->title,
+                    );
                     $data[] = $reservation->toArray();
                 }
                 $response["length"] = sizeof($data);

@@ -45,10 +45,49 @@ class OwnerReservationController extends Controller
         $keyword = Input::get('keyword');
         $storeId = Input::get('store_id');
         $statusArr = Input::get('status') ? Input::get('status') : null;
+        $period = Input::get('period') ? Input::get('period') : "all";
         // TODO: validation Request params
         try{
             if($user && $storeId){
                 $reservation = UserReservationStore::where('store_id', $storeId)->orderBy('created_at', 'desc');
+                if($period && $period != "all"){
+                    switch ($period) {
+                        case 'available':
+                            $reservation->where('datetime', '>', \DB::raw('NOW()'));
+                            break;
+                        case 'tomorrow':
+                            $tomorrow = date('Y-m-d',strtotime("+1 days"));
+                            $reservation->whereBetween('datetime', [$tomorrow . ' 00:00:00', $tomorrow . ' 23:59:59']);
+                            break;
+                        case 'today':
+                            $reservation->whereBetween('datetime', [date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')]);
+                            break;
+                        case 'yesterday':
+                            $yesterday = date('Y-m-d',strtotime("-1 days"));
+                            $reservation->whereBetween('datetime', [$yesterday . ' 00:00:00', $yesterday . ' 23:59:59']);
+                            break;
+                        case 'this_week':
+                            $reservation->where('datetime', '>', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 WEEK)'));
+                            break;
+                        case 'this_month':
+                            $reservation->where(\DB::raw('YEAR(datetime)'), '=', date('Y'));
+                            $reservation->where(\DB::raw('MONTH(datetime)'), '=', date('n'));
+                            break;
+                        case 'last_month':
+                            //$reservation->whereBetween('datetime', [\DB::raw('DATE_FORMAT(NOW() - INTERVAL 1 MONTH, \'%Y-%m-01 00:00:00\')'), \DB::raw('DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), \'%Y-%m-%d 23:59:59\')')]);
+                            $reservation->whereRaw('`datetime` BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 MONTH, \'%Y-%m-01 00:00:00\') AND DATE_FORMAT(LAST_DAY(NOW() - INTERVAL 1 MONTH), \'%Y-%m-%d 23:59:59\')');
+                            break;
+                        case 'current_year':
+                            //$reservation->whereBetween('datetime', [\DB::raw('YEAR(datetime)'), \DB::raw('DATE_FORMAT(NOW()')]);
+                            $reservation->where(\DB::raw('YEAR(datetime)'), '=', \DB::raw('YEAR(CURDATE())'));
+                            break;
+                        case 'last_year':
+                            $reservation->where(\DB::raw('YEAR(datetime)'), '=', date('Y') - 1);
+                            break;
+                        default:
+                    }
+
+                }
                 if(!empty($statusArr)){
                     $reservation->whereIn('status', $statusArr);
                 }
@@ -59,13 +98,18 @@ class OwnerReservationController extends Controller
                 $reservations = $reservation->get();
                 $data = array();
                 foreach ($reservations as $reservation) {
+                    $belongTo = $reservation->user;
+                    $reservation->customer = array(
+                        'fullname' => $belongTo->first_name . " " . $belongTo->last_name,
+                        'phone' => $belongTo->mobile
+                    );
                     $data[] = $reservation->toArray();
                 }
                 $response["length"] = sizeof($data);
                 $response["data"] = $data;
             }
         }catch (Exception $e){
-            $statusCode = 400;
+            $statusCode = Response::HTTP_CONFLICT;
         }finally{
             return \Response::json($response, $statusCode);
         }

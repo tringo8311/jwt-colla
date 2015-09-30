@@ -15,8 +15,8 @@ return [
     |
     */
 
-    //'driver' => env('MAIL_DRIVER', 'mailgun'),
-    'driver' => env('MAIL_DRIVER', 'smtp'),
+    'driver' => env('MAIL_DRIVER', 'mailgun'),
+    //'driver' => env('MAIL_DRIVER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,8 +29,8 @@ return [
     |
     */
 
-    //'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
-    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    //'host' => env('MAIL_HOST', 'smtp.gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'service@myspa247.com', 'name' => 'MySpa247'],
 
     /*
     |--------------------------------------------------------------------------
@@ -82,8 +82,8 @@ return [
     |
     */
 
-    //'username' => env('postmaster'),
-    'username' => env('MAIL_USERNAME'),
+    'username' => env('postmaster@myspa247.com'),
+    //'username' => env('MAIL_USERNAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -96,8 +96,8 @@ return [
     |
     */
 
-    //'password' => env('00ce471b12941d5faf90487c7cf85658'),
-    'password' => env('MAIL_PASSWORD'),
+    'password' => env('b06a4b2c202fadd7f1d9ffb3f3472ea4'),
+    //'password' => env('MAIL_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------
