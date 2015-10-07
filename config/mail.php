@@ -56,7 +56,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'service@myspa247.com', 'name' => 'MySpa247'],
+    'from' => ['address' => 'postmaster@myspa247.com', 'name' => 'MySpa247'],
 
     /*
     |--------------------------------------------------------------------------
@@ -82,8 +82,8 @@ return [
     |
     */
 
-    'username' => env('postmaster@myspa247.com'),
-    //'username' => env('MAIL_USERNAME'),
+    //'username' => env('postmaster@myspa247.com'),
+    'username' => env('MAIL_USERNAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -96,8 +96,8 @@ return [
     |
     */
 
-    'password' => env('b06a4b2c202fadd7f1d9ffb3f3472ea4'),
-    //'password' => env('MAIL_PASSWORD'),
+    //'password' => env('b06a4b2c202fadd7f1d9ffb3f3472ea4'),
+    'password' => env('MAIL_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------

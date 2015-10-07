@@ -16,7 +16,7 @@ return [
 
     'mailgun' => [
         'domain' => env('myspa247.com'),
-        'secret' => env('key-25e1a088c8cf19a8182fbcd40a5487ea'),
+        'secret' => env('key-0cc6e884c214f5b55cdbc7ca9d7d9d6b'),
     ],
 
     'mandrill' => [
@@ -36,3 +36,4 @@ return [
     ],
 
 ];
+//0cc6e884c214f5b55cdbc7ca9d7d9d6b
