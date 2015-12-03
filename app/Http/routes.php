@@ -16,6 +16,10 @@ Route::group(['prefix' => 'password'], function() {
     Route::get('reset/{token}', 'Auth\PasswordController@getReset');
 });
 
+Route::group(['prefix' => 'auth'], function() {
+    Route::post('facebook', 'AuthenticateController@facebook');
+});
+
 Route::group(['prefix' => 'v1/api'], function()
 {
     Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
@@ -44,6 +48,8 @@ Route::group(['prefix' => 'v1/api'], function()
     Route::resource('profile.feedbacks', 'ProfileFeedbackController');
     Route::resource('profile.notes', 'ProfileNoteController');
     Route::resource('profile.reservations', 'ProfileReservationController');
+
+    Route::resource('slider', 'SliderController');
 
     Route::resource('store_offer', 'OfferController');
     Route::resource('owner', 'OwnerController');

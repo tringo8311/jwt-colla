@@ -55,6 +55,15 @@ class AuthenticateController extends Controller
         // if no errors are encountered we can return a JWT
         return response()->json(compact('token'));
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function facebook(Request $request)
+    {
+
+    }
     /**
      * Refresh an expired token.
      *

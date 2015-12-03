@@ -38,7 +38,7 @@ class Store extends Model
         return $this->hasMany('App\Model\StoreOffer');
     }
     /**
-     * The offers that belong to the role.
+     * The feedbacks that belong to the user.
      */
     public function feedbacks()
     {

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Support\Facades\DB;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -68,8 +69,32 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function stamps(){
         return $this->hasMany('App\Model\UserStampStore', 'user_id', 'id');
     }
+
+    /**
+     * @param $currentUserId
+     * @param $storeId
+     * @param $keyword
+     */
+    public static function querySearch($storeId, $currentUserId, $keyword){
+        DB::enableQueryLog();
+        $query = 'SELECT u.* FROM users AS u JOIN user_stores AS us ON u.id = us.user_id JOIN stores AS s ON s.bID = us.store_id';
+        $query .= ' WHERE s.bID = ?';
+        if(!empty($keyword)){
+            $query .= ' AND (u.first_name LIKE "%' . $keyword . '%" OR u.last_name LIKE "%'
+                . $keyword . '%" OR u.mobile LIKE "%' . $keyword . '%" OR u.code LIKE "%' . $keyword . '%")';
+        }
+        $query .= ' HAVING u.id != ?';
+        $result = DB::select($query, array($storeId,  $currentUserId));
+        //$result = DB::select($query, array($storeId, $keyword, $keyword, $currentUserId));
+        /*$queries = DB::getQueryLog();
+        $last_query = end($queries);
+        var_dump($last_query);*/
+        return $result;
+
+    }
 }
 
+use Jenssegers\Optimus\Optimus;
 class UserObserver {
 
     /**
@@ -78,6 +103,8 @@ class UserObserver {
      *
      */
     public function saving($activity){
-        $activity->code = hexdec(uniqid());
+        $optimus = new Optimus(1580030173, 59260789, 1163945558);
+        $encoded = $optimus->encode(hexdec(uniqid()));
+        $activity->code = $encoded;
     }
 }

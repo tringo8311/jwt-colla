@@ -46,6 +46,7 @@ class StoreController extends Controller
             $stores = Store::where('active', '1')->orderBy('created_at', 'desc');
             if($keyword){
                 $stores->where('title', 'like' ,"%$keyword%")->orWhere('address', 'like' ,"%$keyword%")
+                    ->orWhere('phone', 'like' ,"%$keyword%")
                     ->orWhere('service', 'like' ,"%$keyword%")->orWhere('zipcode', 'like' ,"%$keyword%");
             }
             $response['totalItems'] = $stores->count();
@@ -265,20 +266,26 @@ class StoreController extends Controller
         $user = JWTAuth::toUser($token);
         $keyword = Input::get('keyword');
         try{
-            $store = Store::find($store_id)->users()->where("user_id", "!=", $user->id)->orderBy('created_at', 'desc');
-            //$store = User::where("store_id", "=", $store_id)->users()->where("user_id", "!=", $user->id)->orderBy('created_at', 'desc');
+            //$userModel = Store::find($store_id)->users()->where("user_id", "!=", $user->id)->orderBy('created_at', 'desc');
+            /*$userModel = User::join('user_stores', 'users.id','=','user_stores.user_id')
+                ->join('stores','stores.bID','=','user_stores.store_id')
+                ->where("users.user_id", "!=", $user->id)
+                ->orderBy('users.created_at', 'desc');
             if($keyword){
                 if(is_int($keyword)){
-                    $store->where('code', 'like' ,"%$keyword%");
+                    $userModel->where('code', 'like' ,"%$keyword%");
                 }else{
-                    $store->where('first_name', 'like' ,"%$keyword%");
+                    $userModel->where('users.first_name', 'like' , "%$keyword%")
+                        ->orWhere('users.last_name', 'like', "%$keyword%")
+                        ->orWhere('users.mobile', 'like', "%$keyword%");
                 }
             }
-            $users = $store->get();
+            $users = $userModel->with('stores')->distinct()->get(['users.*']);*/
+            $users = User::querySearch($store_id, $user->id, $keyword);
             $customers = array();
             foreach ($users as $user) {
-                $user->stamp_count = $user->stamps()->where('used', '=', 0)->count();
-                $customers[] = $user->toArray();
+                $user->stamp_count = User::find($user->id)->stamps()->where('used', '=', 0)->count();
+                $customers[] = $user;
             }
             $response["length"] = sizeof($customers);
             $response["data"] = $customers;
